@@ -132,7 +132,7 @@ vcpkgCheckEqualFileHash()
         echo "File does not have expected hash:"
         echo "              url: [ $url ]"
         echo "        File path: [ $downloadPath ]"
-        echo "    Expected hash: [ $sha512 ]"
+        echo "    Expected hash: [ $expectedHash ]"
         echo "      Actual hash: [ $actualHash ]"
         exit 1
     fi
@@ -169,31 +169,37 @@ vcpkgExtractTar()
 # Read the vcpkg-tool config file to determine what release to download
 . "$vcpkgRootDir/scripts/vcpkg-tool-metadata.txt"
 
-vcpkgDownloadTool="ON"
-if [ "$UNAME" = "Darwin" ]; then
-    echo "Downloading vcpkg-macos..."
-    vcpkgToolReleaseSha=$VCPKG_MACOS_SHA
-    vcpkgToolName="vcpkg-macos"
-elif [ "$vcpkgUseMuslC" = "ON" ]; then
-    echo "Downloading vcpkg-muslc..."
-    vcpkgToolReleaseSha=$VCPKG_MUSLC_SHA
-    vcpkgToolName="vcpkg-muslc"
-elif [ "$ARCH" = "x86_64" ]; then
-    echo "Downloading vcpkg-glibc..."
-    vcpkgToolReleaseSha=$VCPKG_GLIBC_SHA
-    vcpkgToolName="vcpkg-glibc"
-else
-    echo "Unable to determine a binary release of vcpkg; attempting to build from source."
-    vcpkgDownloadTool="OFF"
-    vcpkgToolReleaseSha=$VCPKG_TOOL_SOURCE_SHA
-fi
+# SINGLESTORE PATCH: Disable downloading artifacts, just build from source
+vcpkgDownloadTool="OFF"
+vcpkgToolReleaseSha=$VCPKG_TOOL_SOURCE_SHA
+# vcpkgDownloadTool="ON"
+# if [ "$UNAME" = "Darwin" ]; then
+#     echo "Downloading vcpkg-macos..."
+#     vcpkgToolReleaseSha=$VCPKG_MACOS_SHA
+#     vcpkgToolName="vcpkg-macos"
+# elif [ "$vcpkgUseMuslC" = "ON" ]; then
+#     echo "Downloading vcpkg-muslc..."
+#     vcpkgToolReleaseSha=$VCPKG_MUSLC_SHA
+#     vcpkgToolName="vcpkg-muslc"
+# elif [ "$ARCH" = "x86_64" ]; then
+#     echo "Downloading vcpkg-glibc..."
+#     vcpkgToolReleaseSha=$VCPKG_GLIBC_SHA
+#     vcpkgToolName="vcpkg-glibc"
+# else
+#     echo "Unable to determine a binary release of vcpkg; attempting to build from source."
+#     vcpkgDownloadTool="OFF"
+#     vcpkgToolReleaseSha=$VCPKG_TOOL_SOURCE_SHA
+# fi
+
+# VCPKG_TOOL_REPOSITORY="https://github.com/microsoft/vcpkg-tool"
+VCPKG_TOOL_REPOSITORY="https://github.com/singlestore/vcpkg-tool"
 
 # Do the download or build.
 if [ "$vcpkgDownloadTool" = "ON" ]; then
-    vcpkgDownloadFile "https://github.com/microsoft/vcpkg-tool/releases/download/$VCPKG_TOOL_RELEASE_TAG/$vcpkgToolName" "$vcpkgRootDir/vcpkg" $vcpkgToolReleaseSha
+    vcpkgDownloadFile "$VCPKG_TOOL_REPOSITORY/releases/download/$VCPKG_TOOL_RELEASE_TAG/$vcpkgToolName" "$vcpkgRootDir/vcpkg" $vcpkgToolReleaseSha
 else
     vcpkgToolReleaseTarball="$VCPKG_TOOL_RELEASE_TAG.tar.gz"
-    vcpkgToolUrl="https://github.com/microsoft/vcpkg-tool/archive/$vcpkgToolReleaseTarball"
+    vcpkgToolUrl="$VCPKG_TOOL_REPOSITORY/archive/$vcpkgToolReleaseTarball"
     baseBuildDir="$vcpkgRootDir/buildtrees/_vcpkg"
     buildDir="$baseBuildDir/build"
     tarballPath="$downloadsDir/$vcpkgToolReleaseTarball"
