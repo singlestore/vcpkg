@@ -66,7 +66,7 @@ vcpkg_find_acquire_program(PKGCONFIG)
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
-    OPTIONS 
+    OPTIONS
         "-DCMAKE_PROJECT_INCLUDE=${CMAKE_CURRENT_LIST_DIR}/cmake-project-include.cmake"
         "-DPKG_CONFIG_EXECUTABLE=${PKGCONFIG}"
         ${FEATURE_OPTIONS}
@@ -76,6 +76,7 @@ vcpkg_cmake_configure(
         -DCURL_CA_FALLBACK=ON
         -DCURL_USE_PKGCONFIG=OFF
         -DCMAKE_DISABLE_FIND_PACKAGE_Perl=ON
+        -DCMAKE_DEBUG_POSTFIX=""
     MAYBE_UNUSED_VARIABLES
         PKG_CONFIG_EXECUTABLE
 )
