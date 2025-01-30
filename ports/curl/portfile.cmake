@@ -7,6 +7,7 @@ vcpkg_from_github(
     SHA512 ab54562a70209da20fa3d797029dc7022a37b7c501e50250503721251cbf209938fb37ffc1dc9d82c451b1da1b76c79f35c53953b029b5b000903db98aee5840
     HEAD_REF master
     PATCHES
+        ff5091a-avoid-closig-eventfd-twice.patch
         0005_remove_imp_suffix.patch
         0020-fix-pc-file.patch
         0022-deduplicate-libs.patch
