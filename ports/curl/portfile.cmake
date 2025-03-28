@@ -74,7 +74,6 @@ vcpkg_cmake_configure(
         ${OPTIONS}
         -DBUILD_TESTING=OFF
         -DENABLE_CURL_MANUAL=OFF
-        -DCURL_CA_FALLBACK=ON
         -DCURL_USE_PKGCONFIG=OFF
         -DCMAKE_DISABLE_FIND_PACKAGE_Perl=ON
         -DCMAKE_DEBUG_POSTFIX=""
